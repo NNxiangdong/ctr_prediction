@@ -1,0 +1,2 @@
+for i in range(len(enc.feature_indices_)-1):
+    print len(enc.active_features_[enc.active_features_<enc.feature_indices_[i+1]][enc.active_features_[enc.active_features_<enc.feature_indices_[i+1]]>=enc.feature_indices_[i]])
