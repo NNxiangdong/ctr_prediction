@@ -42,3 +42,29 @@ for i, keyword in enumerate(df.keyword):
     dummies.ix[i, set(str(keyword).split('|')).intersection(set(keywords))] = 1
 
 print 'finished'
+================================================================================================================
+import numpy as np
+import pandas as pd
+import scipy
+from scipy.sparse import vstack
+
+file = r'E:\ad\iqiy_data\sample.csv'
+
+df = pd.read_csv(file, names = ['spotid', 'ac802', 'drt', 'did', 'brd', 'mod', 'sw', 'sh', 'os', 'osv', 'ip', 'country', 'apn', 'connt', 'lat', 'lon', 'ua', 'w', 'h', 'pos', 'city', 'carrier', 'bidceiling', 'lang', 'bidprice', 'winprice', 'adw', 'adh', 'title', 'content', 'imageurl', 'bidappnm', 'blank', 'goal', 'hv', 'pub_title', 'keyword', 'channelid', 'albumid'])
+
+pre = df.loc[:, ['spotid', 'click', 'drt', 'uid', 'os', 'connt', 'w', 'h', 'pos', 'city', 'lang', 'bidprice', 'winprice', 'adw', 'adh', 'bidappnm', 'goal', 'keyword', 'albumid', 'mon', 'day', 'hour', 'minute', 'weekday']]
+ 
+keyword_iter = (set(str(x).split('|')) for x in pre.keyword)
+keywords = sorted(set.union(*keyword_iter))
+
+dummies = pd.DataFrame(np.zeros((1, len(keywords))), columns=keywords)
+dummies.ix[0, str(pre.keyword[0]).split('|')] = 1
+csrRes = scipy.sparse.csr_matrix(dummies.values)
+
+for i, keyword in enumerate(pre.keyword[1:]):
+    dummies.ix[0, ] = 0
+    dummies.ix[0, str(keyword).split('|')] = 1
+    res = scipy.sparse.csr_matrix(dummies.values)
+    csrRes = vstack([csrRes,res])
+
+print 'finished'
