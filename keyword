@@ -67,4 +67,17 @@ for i, keyword in enumerate(pre.keyword[1:]):
     res = scipy.sparse.csr_matrix(dummies.values)
     csrRes = vstack([csrRes,res])
 
+keyword_count=[]
+
+for i in range(np.shape(csrRes)[1]):
+    keyword_count.append(int(sum(csrRes[:,i].todense())))
+
+keyword_top=sorted(keyword_count,reverse=1)
+
+column_selected=[]
+
+for i in keyword_top:
+    column_selected.extend(myfind(i,keyword_count))
+    if(len(column_selected)>=100):break
+
 print 'finished'
