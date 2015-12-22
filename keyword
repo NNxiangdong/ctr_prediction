@@ -48,6 +48,9 @@ import pandas as pd
 import scipy
 from scipy.sparse import vstack
 
+def myfind(x,y):
+    return [ a for a in range(len(y)) if y[a] == x]
+
 file = r'E:\ad\iqiy_data\sample.csv'
 
 df = pd.read_csv(file, names = ['spotid', 'ac802', 'drt', 'did', 'brd', 'mod', 'sw', 'sh', 'os', 'osv', 'ip', 'country', 'apn', 'connt', 'lat', 'lon', 'ua', 'w', 'h', 'pos', 'city', 'carrier', 'bidceiling', 'lang', 'bidprice', 'winprice', 'adw', 'adh', 'title', 'content', 'imageurl', 'bidappnm', 'blank', 'goal', 'hv', 'pub_title', 'keyword', 'channelid', 'albumid'])
