@@ -123,6 +123,8 @@ import scipy
 from scipy.sparse import vstack
 import time
 
+TOP_NUM=10
+
 def myfind(x,y):
     return [ a for a in range(len(y)) if y[a] == x]
 
@@ -146,11 +148,11 @@ kwdict = {}.fromkeys((keywords), 0)
 for i, keyword in enumerate(pre.keyword):
     [mycal(x) for x in str(keyword).split('|')]
     
-kwTop=sorted(kwdict.items(), key=lambda d: d[1],reverse=True)[0:10]
+kwTop=sorted(kwdict.items(), key=lambda d: d[1],reverse=True)[0:TOP_NUM]
 
 kwSet=set([j[0] for j in kwTop])
 
-dummies = pd.DataFrame(np.zeros((1, 10)), columns=[j[0] for j in kwTop])
+dummies = pd.DataFrame(np.zeros((1, TOP_NUM)), columns=[j[0] for j in kwTop])
 dummies.ix[0, set(str(pre.keyword[0]).split('|')).intersection(set(kwSet))] = 1
 csrRes = scipy.sparse.csr_matrix(dummies.values)
 
