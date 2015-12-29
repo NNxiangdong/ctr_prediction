@@ -1,0 +1,110 @@
+import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+
+public class TestCharts {
+	 public static void main(String[] args) throws IOException{ 
+	        
+	        CategoryDataset dataset = getDataSet("D:\\output\\WARCDateDis\\part-r-00000"); 
+	        JFreeChart chart = ChartFactory.createBarChart3D( 
+	                           "访问时间数量图", // 图表标题
+	                           "时间（为标注时刻及之后的10分钟）", // 目录轴的显示标签
+	                           "数量", // 数值轴的显示标签
+	                            dataset, // 数据集
+	                            PlotOrientation.VERTICAL, // 图表方向：水平、垂直
+	                            false,  // 是否显示图例(对于简单的柱状图必须是 false)
+	                            false, // 是否生成工具
+	                            false  // 是否生成 URL 链接
+	                            ); 
+	        //中文乱码
+	        CategoryPlot categoryplot = (CategoryPlot) chart.getPlot();
+	        NumberAxis numberaxis = (NumberAxis) categoryplot.getRangeAxis();  
+	        CategoryAxis domainAxis = categoryplot.getDomainAxis();  
+	        TextTitle textTitle = chart.getTitle();
+	        textTitle.setFont(new Font("黑体", Font.PLAIN, 20));      
+	        domainAxis.setTickLabelFont(new Font("sans-serif", Font.PLAIN, 11));  
+	        domainAxis.setLabelFont(new Font("宋体", Font.PLAIN, 12));  
+	        numberaxis.setTickLabelFont(new Font("sans-serif", Font.PLAIN, 12));  
+	        numberaxis.setLabelFont(new Font("黑体", Font.PLAIN, 12));  
+//	        chart.getLegend().setItemFont(new Font("宋体", Font.PLAIN, 12));
+	                           
+	        FileOutputStream fos_jpg = null; 
+	        try { 
+	            fos_jpg = new FileOutputStream("D:\\exercises\\BarChart.jpg"); 
+	            ChartUtilities.writeChartAsJPEG(fos_jpg, 1.0f,chart,800,600,null); 
+	        } finally { 
+	            try { 
+	                fos_jpg.close(); 
+	            } catch (Exception e) {} 
+	        } 
+	    } 
+	    /** 
+	    * 获取一个演示用的简单数据集对象
+	    * @return 
+	    */ 
+	    private static CategoryDataset getDataSet(String filePath) { 
+	        DefaultCategoryDataset dataset = new DefaultCategoryDataset(); 
+	        try {
+		                String encoding="GBK";
+		                File file=new File(filePath);
+		                if(file.isFile() && file.exists()){ //判断文件是否存在
+		                    InputStreamReader read = new InputStreamReader(
+		                    new FileInputStream(file),encoding);//考虑到编码格式
+		                    BufferedReader bufferedReader = new BufferedReader(read);
+		                    String lineTxt = null;
+		                    while((lineTxt = bufferedReader.readLine()) != null){
+//		                        System.out.println(lineTxt);
+		                    	dataset.addValue(Integer.parseInt(lineTxt.split("\\s")[1]), "", lineTxt.split("\\s")[0]+"0~"); 
+		                    }
+		                    read.close();
+		        }else{
+		            System.out.println("找不到指定的文件");
+		        }
+		        } catch (Exception e) {
+		            System.out.println("读取文件内容出错");
+		            e.printStackTrace();
+		        }
+		     
+	        return dataset; 
+		    }
+
+	    /** 
+	    * 获取一个演示用的组合数据集对象
+	    * @return 
+	    */ 
+	    private static CategoryDataset getDataSet2() { 
+	        DefaultCategoryDataset dataset = new DefaultCategoryDataset(); 
+	        dataset.addValue(100, "北京", "苹果"); 
+	        dataset.addValue(100, "上海", "苹果"); 
+	        dataset.addValue(100, "广州", "苹果"); 
+	        dataset.addValue(200, "北京", "梨子"); 
+	        dataset.addValue(200, "上海", "梨子"); 
+	        dataset.addValue(200, "广州", "梨子"); 
+	        dataset.addValue(300, "北京", "葡萄"); 
+	        dataset.addValue(300, "上海", "葡萄"); 
+	        dataset.addValue(300, "广州", "葡萄"); 
+	        dataset.addValue(400, "北京", "香蕉"); 
+	        dataset.addValue(400, "上海", "香蕉"); 
+	        dataset.addValue(400, "广州", "香蕉"); 
+	        dataset.addValue(500, "北京", "荔枝"); 
+	        dataset.addValue(500, "上海", "荔枝"); 
+	        dataset.addValue(500, "广州", "荔枝"); 
+	        return dataset; 
+	    } 
+}
