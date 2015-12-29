@@ -5,6 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -21,7 +30,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class TestCharts {
 	 public static void main(String[] args) throws IOException{ 
 	        
-	        CategoryDataset dataset = getDataSet("D:\\output\\WARCDateDis\\part-r-00000"); 
+	        CategoryDataset dataset = getDataSetFetchTimeMsDis("D:\\output\\FetchTimeMsDis\\part-r-00000"); 
 	        JFreeChart chart = ChartFactory.createBarChart3D( 
 	                           "访问时间数量图", // 图表标题
 	                           "时间（为标注时刻及之后的10分钟）", // 目录轴的显示标签
@@ -55,10 +64,10 @@ public class TestCharts {
 	        } 
 	    } 
 	    /** 
-	    * 获取一个演示用的简单数据集对象
+	    * 获取WARCDateDis数据
 	    * @return 
 	    */ 
-	    private static CategoryDataset getDataSet(String filePath) { 
+	    private static CategoryDataset getDataSetWARCDateDis(String filePath) { 
 	        DefaultCategoryDataset dataset = new DefaultCategoryDataset(); 
 	        try {
 		                String encoding="GBK";
@@ -83,28 +92,69 @@ public class TestCharts {
 		     
 	        return dataset; 
 		    }
+	    
+		/**
+		 * @param 获取DataSetFetchTimeMsDis数据
+		 * @return
+		 */
+		public static CategoryDataset getDataSetFetchTimeMsDis(String filePath) {
+			DefaultCategoryDataset dataset = new DefaultCategoryDataset(); 
+				
+				try {
+	                String encoding="GBK";
+	                File file=new File(filePath);
+	                if(file.isFile() && file.exists()){ //判断文件是否存在
+	                    InputStreamReader read = new InputStreamReader(
+	                    new FileInputStream(file),encoding);//考虑到编码格式
+	                    BufferedReader bufferedReader = new BufferedReader(read);
+	                    String lineTxt = null;
+	                    
+	                    Map<String, String> oriMap=new TreeMap<String, String>();
+	    				Map.Entry<String, String> tmpEntry = null;
+	    				 while((lineTxt = bufferedReader.readLine()) != null){
+	    					 oriMap.put(lineTxt.split("\\s")[0], lineTxt.split("\\s")[1]);
+	    				 }
 
-	    /** 
-	    * 获取一个演示用的组合数据集对象
-	    * @return 
-	    */ 
-	    private static CategoryDataset getDataSet2() { 
-	        DefaultCategoryDataset dataset = new DefaultCategoryDataset(); 
-	        dataset.addValue(100, "北京", "苹果"); 
-	        dataset.addValue(100, "上海", "苹果"); 
-	        dataset.addValue(100, "广州", "苹果"); 
-	        dataset.addValue(200, "北京", "梨子"); 
-	        dataset.addValue(200, "上海", "梨子"); 
-	        dataset.addValue(200, "广州", "梨子"); 
-	        dataset.addValue(300, "北京", "葡萄"); 
-	        dataset.addValue(300, "上海", "葡萄"); 
-	        dataset.addValue(300, "广州", "葡萄"); 
-	        dataset.addValue(400, "北京", "香蕉"); 
-	        dataset.addValue(400, "上海", "香蕉"); 
-	        dataset.addValue(400, "广州", "香蕉"); 
-	        dataset.addValue(500, "北京", "荔枝"); 
-	        dataset.addValue(500, "上海", "荔枝"); 
-	        dataset.addValue(500, "广州", "荔枝"); 
-	        return dataset; 
-	    } 
+	    				 List<Map.Entry<String, String>> entryList = new ArrayList<Map.Entry<String, String>>(oriMap.entrySet());
+	    				 Iterator<Map.Entry<String, String>> iter = entryList.iterator();
+	    				 Map<String, String> sortedMap = new LinkedHashMap<String, String>();
+	    				Collections.sort(entryList,
+	    							new Comparator<Map.Entry<String, String>>() {
+	    								public int compare(Entry<String, String> entry1,
+	    										Entry<String, String> entry2) {
+	    									int value1 = 0, value2 = 0;
+	    									try {
+	    										value1 = Integer.parseInt(entry1.getValue());
+	    										value2 = Integer.parseInt(entry2.getValue());
+	    									} catch (NumberFormatException e) {
+	    										value1 = 0;
+	    										value2 = 0;
+	    									}
+	    									return value2 - value1;
+	    								}
+	    							});
+	    				
+	    				while (iter.hasNext()) {
+	    					tmpEntry = iter.next();
+	    					sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());
+	    				}
+	    				
+	    				int i=0;
+						for (Map.Entry<String, String> entry : sortedMap.entrySet()) {  
+							i++;
+						    dataset.addValue(Integer.parseInt(entry.getValue()), "", entry.getKey()); 
+						    if (i==20) break;
+						} 
+	                    
+	                    read.close();
+	        }else{
+	            System.out.println("找不到指定的文件");
+	        }
+	        } catch (Exception e) {
+	            System.out.println("读取文件内容出错");
+	            e.printStackTrace();
+	        }
+			return dataset; 
+		}
+
 }
