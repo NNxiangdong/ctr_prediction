@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+import numpy as np
+import matplotlib.pyplot as plt
+
+data=[1447781,1442460,1406642,367651,202422,183086,123138,103104,65633,1]
+
+n_groups = 10
+bar_width = 0.35
+
+plt.rc('font', family='SimHei', size=13)
+
+index = np.arange(n_groups)
+idx=np.arange(len(data))
+plt.bar(idx, data, bar_width, color='red', label='11')
+
+plt.xlabel(u'feature category')
+plt.ylabel(u'counts')
+
+plt.title(u"category distribution")
+#plt.xticks((1447781,1442460,1406642,367651,202422,183086,123138,103104,65633,1),(u'106900',u'106899',u'106886',u'106885',u'107060',u'107189',u'107166',u'107188',u'107167',u'107059'))
+
+plt.xticks(index + bar_width, (u'106900',u'106899',u'106886',u'106885',u'107060',u'107189',u'107166',u'107188',u'107167',u'107059'))
+#plt.legend((rect,),(u"图例",))
+
+plt.show()
