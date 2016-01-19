@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+import numpy as np
+import matplotlib.pyplot as plt 
+x = [0, 1, 2, 3, 4, 5, 6]
+y = [4850, 4719, 8190, 9802, 5027, 5848,5758]
+plt.plot(x, y, '-*r')
+plt.title(u"weekday-click distribution")
+plt.xlabel("weekday")
+plt.ylabel("click counts")
+plt.show()
